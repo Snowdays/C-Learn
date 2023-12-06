@@ -312,6 +312,23 @@ ListNode* Solution::removeNthFromEnd(ListNode* head, int n){
     return CHead->next;
 }
 
+ListNode* Solution::reverseBetween(ListNode* head, int left, int right){
+    ListNode *dummy = new ListNode(0, head), *p0 = dummy;
+    for (int i = 0; i < left - 1; ++i)
+        p0 = p0->next;
+
+    ListNode *pre = nullptr, *cur = p0->next;
+    for (int i = 0; i < right - left + 1; ++i) {
+        ListNode *nxt = cur->next;
+        cur->next = pre; 
+        pre = cur;
+        cur = nxt;
+    }
+    p0->next->next = cur;
+    p0->next = pre;
+    return dummy->next;
+}
+
 //双指针
 int Solution::removeDuplicates(vector<int>& nums) {
     int len = nums.size();
@@ -632,6 +649,55 @@ vector<vector<int>> Solution::subsetsWithDup(vector<int>& nums){
     };
     dfs(0);
     return res;
+}
+
+vector<string> result;// 记录结果
+// startIndex: 搜索的起始位置，pointNum:添加逗点的数量
+
+// 判断字符串s在左闭又闭区间[start, end]所组成的数字是否合法
+bool isValid(const string& s, int start, int end) {
+    if (start > end) {
+        return false;
+    }
+    if (s[start] == '0' && start != end) { // 0开头的数字不合法
+            return false;
+    }
+    int num = 0;
+    for (int i = start; i <= end; i++) {
+        if (s[i] > '9' || s[i] < '0') { // 遇到非数字字符不合法
+            return false;
+        }
+        num = num * 10 + (s[i] - '0');
+        if (num > 255) { // 如果大于255了不合法
+            return false;
+        }
+    }
+    return true;
+}
+void backtracking_restoreIpAddresses(string& s, int startIndex, int pointNum) {
+    if (pointNum == 3) { // 逗点数量为3时，分隔结束, 推出循环的条件
+        // 判断第四段子字符串是否合法，如果合法就放进result中
+        if (isValid(s, startIndex, s.size() - 1)) {
+            result.push_back(s);
+        }
+        return;
+    }
+    for (int i = startIndex; i < s.size(); i++) {
+        if (isValid(s, startIndex, i)) { // 判断 [startIndex,i] 这个区间的子串是否合法
+            s.insert(s.begin() + i + 1 , '.');  // 在i的后面插入一个逗点
+            pointNum++;
+            backtracking_restoreIpAddresses(s, i + 2, pointNum);   // 插入逗点之后下一个子串的起始位置为i+2
+            pointNum--;                         // 回溯
+            s.erase(s.begin() + i + 1);         // 回溯删掉逗点
+        } else break; // 不合法，直接结束本层循环
+    }
+}
+
+vector<string> Solution::restoreIpAddresses(string s) {
+    result.clear();
+    if (s.size() < 4 || s.size() > 12) return result; // 算是剪枝了
+    backtracking_restoreIpAddresses(s, 0, 0);
+    return result;
 }
 
 //深度优先搜索中插入剪枝
@@ -1596,4 +1662,118 @@ vector<int> Solution::grayCode(int n){
         pregraycode.push_back(pregraycode[i] + pow(2, n-1));
     }
     return pregraycode;
+}
+
+//二叉树
+//递归
+//1.确定递归函数的参数和返回值
+//2.确定终止条件
+//3.确定单层递归的逻辑
+
+//中序遍历 递归
+void InOrder_traversal(TreeNode* cur, vector<int>& res){
+    if(cur == NULL) return;
+    InOrder_traversal(cur->left, res);//左
+    res.push_back(cur->val);//中
+    InOrder_traversal(cur->right, res);//右
+}
+//前序遍历 递归
+void Preface_traversal(TreeNode* cur, vector<int>& res){
+    if(cur == NULL) return;
+    res.push_back(cur->val);//中
+    Preface_traversal(cur->left, res);//左
+    Preface_traversal(cur->right, res);//右
+}
+//后序遍历 递归
+void Post_order_traversal(TreeNode* cur, vector<int>& res){
+    if(cur == NULL) return;
+    InOrder_traversal(cur->left, res);//左
+    res.push_back(cur->val);//右
+    InOrder_traversal(cur->right, res);//中
+}
+
+vector<int> Solution::inorderTraversal(TreeNode* root){
+    vector<int> res;
+    InOrder_traversal(root, res);
+    return res;
+}
+
+//中序遍历 迭代
+vector<int> InOrder_traversal_iteration(TreeNode* root){
+    stack<TreeNode*> st;
+    vector<int> res;
+    TreeNode* cur = root;
+    while(cur != NULL || !st.empty()){
+        if(cur != NULL){
+            st.push(cur);
+            cur = cur->left;//左
+        }
+        else{
+            cur = st.top();
+            st.pop();
+            res.push_back(cur->val);//中
+            cur = cur->right;//右
+        }
+    }
+}
+//前序遍历 迭代
+vector<int> Preface_traversal_iteration(TreeNode* root){
+    stack<TreeNode*> st;
+    vector<int> res;
+    if(root == NULL) return res;
+    st.push(root);
+    while (!st.empty())
+    {
+        /* code */
+        TreeNode* node = st.top();//中
+        st.pop();
+        res.push_back(node->val);
+        if(node->right) st.push(node->right);//右
+        if(node->left) st.push(node->left);//左
+    }
+    return res;
+    
+}
+//后序遍历 迭代
+vector<int> Post_order_traversal_iteration(TreeNode* root){
+    stack<TreeNode*> st;
+    vector<int> res;
+    if(root == NULL) return res;
+    st.push(root);
+    while (!st.empty())
+    {
+        /* code */
+        TreeNode* node = st.top();//中
+        st.pop();
+        res.push_back(node->val);
+        if(node->left) st.push(node->left);//左
+        if(node->right) st.push(node->right);//右
+    }
+    reverse(res.begin(), res.end());
+    return res;
+}
+
+vector<TreeNode*> backtrace_gennerateTrees(int l, int n){
+    vector<TreeNode*> res;
+    if(l > n) res.push_back(nullptr);//最末端插入空节点
+    for(int i = l;i <= n;i++){
+        vector<TreeNode*> left = backtrace_gennerateTrees(l, i-1); //以i为分界点，左边插入左子树，右边插入右子树
+        vector<TreeNode*> right = backtrace_gennerateTrees(i+1, n);
+        for(auto le : left){  //二叉树的构建
+            for(auto ri : right){
+                TreeNode* root = new TreeNode(i);
+                root->left = le;
+                root->right = ri;
+                res.push_back(root);
+            }
+        }
+    }
+    return res;
+}
+
+vector<TreeNode*> Solution::generateTrees(int n){
+    vector<TreeNode*> res;
+    if(n == 0) return res;
+    res = backtrace_gennerateTrees(1, n);
+    return res;
 }

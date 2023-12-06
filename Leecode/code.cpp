@@ -382,9 +382,22 @@ int main(){
     //     }
     //     cout<<endl;
     // }
-    string s = "226";
-    int a = solution.numDecodings(s);
-    cout<<a;
+
+    // string s = "25525511135";
+    // vector<string> a = solution.restoreIpAddresses(s);
+    // for(int i = 0;i < a.size();i++){
+    //     cout<<a[i];
+    // }
+
+    vector<TreeNode*> res = solution.generateTrees(3);
+    for(int i = 0;i< res.size();i++){
+        cout<<res[i]<<" ";
+    }
+
+
+
+
+
 
     return 0;
 }

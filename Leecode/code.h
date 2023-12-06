@@ -15,11 +15,23 @@ struct ListNode{
 	ListNode(int x, ListNode *next) : val(x), next(next){}
 }; 
 
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+
 class Solution{
     private:
     void backtrack(vector<int> &state, int target, vector<int> &choices, int start, vector<vector<int>> &res);
     void backtrack_2(vector<int> &choices, int start, vector<vector<int>> &res);
     void backtrack_3(vector<int> &choices, int start, vector<vector<int>> &res);
+
 
     public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2);
@@ -32,9 +44,15 @@ class Solution{
     int removeElement(vector<int>& nums, int val);
     bool isValid(string s);
     vector<vector<int>> interval_merge(vector<vector<int>>& intervals);
+    //链表
     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2);
     ListNode* removeNthFromEnd(ListNode* head, int n);
     ListNode* removeNthFromEnd2(ListNode* head, int n);//第二种
+    ListNode* deleteDuplicates(ListNode* head);
+    ListNode* deleteDuplicates_simple(ListNode* head);
+    ListNode* partition(ListNode* head, int x);
+    ListNode* reverseBetween(ListNode* head, int left, int right);
+    ListNode* rotateRight(ListNode* head, int k);
     int removeDuplicates(vector<int>& nums);
     int removeDuplicates_2(vector<int>& nums);//第二种
     string convert(string s, int numRows);
@@ -77,7 +95,7 @@ class Solution{
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval);
     int lengthOfLastWord(string s);
     vector<vector<int>> generateMatrix(int n);
-    ListNode* rotateRight(ListNode* head, int k);
+    
     int uniquePaths(int m, int n);
     int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid);
     int minPathSum(vector<vector<int>>& grid);
@@ -95,10 +113,11 @@ class Solution{
     bool exist(vector<vector<char>>& board, string word);
     int removeDuplicates_3(vector<int>& nums);
     bool search(vector<int>& nums, int target);
-    ListNode* deleteDuplicates(ListNode* head);
-    ListNode* deleteDuplicates_simple(ListNode* head);
-    ListNode* partition(ListNode* head, int x);
     vector<string> str_grayCode(int n);
     vector<int> grayCode(int n);
     int numDecodings(string s);
+    vector<string> restoreIpAddresses(string s);
+    //二叉树
+    vector<int> inorderTraversal(TreeNode* root);
+    vector<TreeNode*> generateTrees(int n);
 };
